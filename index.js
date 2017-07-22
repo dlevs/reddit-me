@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fetch = require('node-fetch');
 const notifier = require('node-notifier');
+const sample = require('lodash/sample');
 const args = require('./lib/args');
 const getters = require('./lib/responseGetters');
 const urls = require('./lib/urlCreators');
@@ -16,7 +17,7 @@ const apiRequest = async (path) => {
 };
 
 const getRedditPostAndNotify = async () => {
-	const url = urls.paths.randomPost(args.subreddit);
+	const url = urls.paths.randomPost(sample(args.subreddits));
 	const posts = await apiRequest(url);
 	const post = getters.posts.getOriginalPost(posts);
 
