@@ -1,16 +1,24 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const notifier = require('node-notifier');
 
-const SUBREDDIT = 'webdev'; // TODO: take from
+const yargs = require('yargs') // eslint-disable-line
+	.option('subreddit', {
+		alias: 's',
+		default: null
+	})
+	.help()
+	.argv;
+
 const DEFAULT_ICON_PATH = path.join(__dirname, 'assets/reddit-icon.png');
 
 const apiRequest = async (path) => {
 	const response = await fetch(
 		urls.roots.api(path),
 		{
-			headers: {'User-Agent': 'Node-Script-For-Random-Posts'}
+			headers: {'User-Agent': 'Reddit-Me-Script'}
 		}
 	);
 	return response.json();
@@ -50,6 +58,7 @@ const getters = {
 		getThumbnail: (post) => returnImageUrlOrFallback(post.thumbnail),
 		getTitle: (post) => post.title,
 		getLink: (post) => urls.roots.site(post.permalink),
+		getSubreddit: (post) => post.subreddit,
 		getSummary: (post) => {
 			const {score, num_comments} = post;
 			const rows = [
@@ -57,27 +66,25 @@ const getters = {
 				num_comments + ' ' + plualiser('comment', num_comments),
 			];
 			return rows.join('\n')
-		},
-		getNotifierOptions: (post) => ({
-			title: getters.post.getTitle(post),
-			message: getters.post.getSummary(post),
-			contentImage: getters.post.getThumbnail(post),
-			open: getters.post.getLink(post),
-		})
+		}
 	}
 };
 
 const getRedditPostAndNotify = async () => {
-	const url = urls.paths.randomPost(SUBREDDIT);
+	const url = urls.paths.randomPost(yargs.subreddit);
 	const posts = await apiRequest(url);
 	const post = getters.posts.getOriginalPost(posts);
-	const notifierOptions = Object.assign(
-		getters.post.getNotifierOptions(post),
-		{wait: true, actions: ['Again!']}
-	);
 
 	notifier.notify(
-		notifierOptions,
+		{
+			title: getters.post.getTitle(post),
+			subtitle: getters.post.getSubreddit(post),
+			message: getters.post.getSummary(post),
+			contentImage: getters.post.getThumbnail(post),
+			open: getters.post.getLink(post),
+			wait: true,
+			actions: ['Again!']
+		},
 		(err, type, {activationValue}) => {
 			if (activationValue === 'Again!') {
 				getRedditPostAndNotify();
