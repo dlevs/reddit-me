@@ -31,7 +31,7 @@ const urls = {
 	paths: {
 		randomPost: (subreddit) => subreddit
 			? `/r/${subreddit}/random`
-			: '/r/random'
+			: '/random'
 	}
 };
 
