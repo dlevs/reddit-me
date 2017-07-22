@@ -16,34 +16,29 @@ const apiRequest = async (path) => {
 };
 
 const getRedditPostAndNotify = async () => {
-	try {
-		const url = urls.paths.randomPost(args.subreddit);
-		const posts = await apiRequest(url);
-		const post = getters.posts.getOriginalPost(posts);
+	const url = urls.paths.randomPost(args.subreddit);
+	const posts = await apiRequest(url);
+	const post = getters.posts.getOriginalPost(posts);
 
-		notifier.notify(
-			{
-				title: getters.post.getTitle(post),
-				subtitle: getters.post.getSubreddit(post),
-				message: [
-					getters.post.getCommentCountText(post),
-					getters.post.getUpvoteCountText(post)
-				].join('\n'),
-				contentImage: getters.post.getThumbnail(post),
-				open: getters.post.getLink(post),
-				wait: true,
-				actions: ['Again!']
-			},
-			(err, type, {activationValue}) => {
-				if (activationValue === 'Again!') {
-					getRedditPostAndNotify();
-				}
+	notifier.notify(
+		{
+			title: getters.post.getTitle(post),
+			subtitle: getters.post.getSubreddit(post),
+			message: [
+				getters.post.getCommentCountText(post),
+				getters.post.getUpvoteCountText(post)
+			].join('\n'),
+			contentImage: getters.post.getThumbnail(post),
+			open: getters.post.getLink(post),
+			wait: true,
+			actions: ['Again!']
+		},
+		(err, type, {activationValue}) => {
+			if (activationValue === 'Again!') {
+				getRedditPostAndNotify();
 			}
-		);
-	} catch(e) {
-		console.error(e)
-	}
-
+		}
+	);
 };
 
 getRedditPostAndNotify();
