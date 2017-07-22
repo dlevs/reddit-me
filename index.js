@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const notifier = require('node-notifier');
+const pluralize = require('pluralize');
 
 const yargs = require('yargs') // eslint-disable-line
 	.option('subreddit', {
@@ -40,15 +41,6 @@ const returnImageUrlOrFallback = (url) =>
 		? url
 		: DEFAULT_ICON_PATH;
 
-/**
- * Yes, it's bad. It won't work for all word an languages, but it works for this script.
- * // TODO: look into alternative
- * @param word
- * @param number
- */
-const plualiser = (word, number) => number === 1
-	? word
-	: `${word}s`;
 
 const getters = {
 	posts: {
@@ -59,14 +51,8 @@ const getters = {
 		getTitle: (post) => post.title,
 		getLink: (post) => urls.roots.site(post.permalink),
 		getSubreddit: (post) => post.subreddit,
-		getSummary: (post) => {
-			const {score, num_comments} = post;
-			const rows = [
-				score + ' ' + plualiser('upvote', score),
-				num_comments + ' ' + plualiser('comment', num_comments),
-			];
-			return rows.join('\n')
-		}
+		getCommentCountText: (post) => pluralize('comment', post.num_comments, true),
+		getUpvoteCountText: (post) => pluralize('upvote', post.score, true)
 	}
 };
 
@@ -79,7 +65,10 @@ const getRedditPostAndNotify = async () => {
 		{
 			title: getters.post.getTitle(post),
 			subtitle: getters.post.getSubreddit(post),
-			message: getters.post.getSummary(post),
+			message: [
+				getters.post.getCommentCountText(post),
+				getters.post.getUpvoteCountText(post)
+			].join('\n'),
 			contentImage: getters.post.getThumbnail(post),
 			open: getters.post.getLink(post),
 			wait: true,

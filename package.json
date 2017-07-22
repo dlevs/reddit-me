@@ -12,6 +12,7 @@
   "dependencies": {
     "node-fetch": "^1.7.1",
     "node-notifier": "^5.1.2",
+    "pluralize": "^6.0.0",
     "yargs": "^8.0.2"
   }
 }
