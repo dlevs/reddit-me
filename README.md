@@ -1,11 +1,11 @@
-##About
+## About
 A small script that fetches a random post from reddit and displays it as a notification.
 
 ![Example notification on Mac OS X](./assets/example.png)
 
 The notification is a clickable link to the comments.
 
-##Why
+## Why
 Why not?
 
 ##Install
@@ -14,7 +14,7 @@ Why not?
 
 Or install globally with `npm install -g reddit-me` to use anywhere from the command-line.
 
-##Usage
+## Usage
 ### Command-line
 Display a random post:
 
