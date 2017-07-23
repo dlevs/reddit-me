@@ -30,31 +30,31 @@ const apiRequest = async (path) => {
  * @param {Array} [subreddits]
  * @returns {Promise}
  */
-const getRedditPostAndNotify = async (subreddits = []) => {
-	const url = urls.paths.randomPost(sample(subreddits));
+const getRedditLinkAndNotify = async (subreddits = []) => {
+	const url = urls.paths.random(sample(subreddits));
 	const response = await apiRequest(url);
-	const post = getters.response.getRandomItemOfKind(response, redditKinds.LINK);
+	const link = getters.response.getRandomItemOfKind(response, redditKinds.LINK);
 
 	notifier.notify(
 		{
-			title: getters.link.getTitle(post),
-			subtitle: getters.link.getSubreddit(post),
+			title: getters.link.getTitle(link),
+			subtitle: getters.link.getSubreddit(link),
 			message: [
-				getters.link.getCommentCountText(post),
-				getters.link.getUpvoteCountText(post)
+				getters.link.getCommentCountText(link),
+				getters.link.getUpvoteCountText(link)
 			].join('\n'),
-			contentImage: getters.link.getThumbnail(post),
-			open: getters.link.getLink(post),
+			contentImage: getters.link.getThumbnail(link),
+			open: getters.link.getLink(link),
 			wait: true,
 			actions: ['Again!']
 		},
 		(err, type, {activationValue}) => {
 			if (activationValue === 'Again!') {
-				getRedditPostAndNotify(subreddits);
+				getRedditLinkAndNotify(subreddits);
 			}
 		}
 	);
 };
 
 // Init with arguments from the command line.
-getRedditPostAndNotify(args.subreddits);
+getRedditLinkAndNotify(args.subreddits);
