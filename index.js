@@ -56,5 +56,10 @@ const getRedditLinkAndNotify = async (subreddits = []) => {
 	);
 };
 
-// Init with arguments from the command line.
-getRedditLinkAndNotify(args.subreddits);
+// Init with arguments from the command line, if module is being called
+// directly (not required by another module).
+if (require.main === module) {
+	getRedditLinkAndNotify(args.subreddits);
+}
+
+module.exports = getRedditLinkAndNotify;
