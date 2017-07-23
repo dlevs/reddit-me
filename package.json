@@ -1,6 +1,6 @@
 {
   "name": "reddit-me",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "bin": "index.js",
@@ -10,6 +10,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dlevs/reddit-me"
+  },
   "dependencies": {
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.1",
