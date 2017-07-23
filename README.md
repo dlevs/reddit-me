@@ -8,7 +8,7 @@ The notification is a clickable link to the comments.
 ## Why
 Why not?
 
-##Install
+## Install
 
 `npm install reddit-me`
 
